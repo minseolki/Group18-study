@@ -210,6 +210,7 @@ public class PostService {
 
     }
 
+    //수정하기 --
     public ResponseEntity<ResponseModel> getPostLikeTrue(Long post_id, HttpServletRequest request) {
         Post post = postRepository.findById(post_id).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다.")
