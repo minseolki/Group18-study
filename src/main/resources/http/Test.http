@@ -1,0 +1,51 @@
+//Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNTcxMTk1LCJleHAiOjE2NjE1NzE3OTV9.KKmy_RlSrSIe6RQJQT0TkvlPbVEoHec3YIltWvvYPN4
+
+###
+POST http://localhost:8080/join
+Content-Type: application/json
+
+{
+  "username":"jeeyeon",
+  "password":"1234",
+  "passwordConfirm":"1234"
+}
+
+###
+
+POST http://localhost:8080/api/member/login
+Content-Type: application/json
+
+{
+  "username":"jeeyeon",
+  "password":"1234"
+}
+
+###
+PUT http://localhost:8080/api/post/9
+Content-Type: application/json
+
+###
+
+POST http://localhost:8080/api/auth/post
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNTkwOTQ5LCJleHAiOjE2NjE1OTE1NDl9.Tkjmb4rUAmlnZm4KnsUMYFPF5reGrrfapiuFU6rS60s
+
+{
+  "title": "글 제목입니다 2222",
+  "content": "글 내용입니다 2222",
+  "imgUrl": "aaa"
+}
+
+###
+POST http://localhost:8080/api/auth/post/9/comment
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNTgzMDE3LCJleHAiOjE2NjE1ODM2MTd9.nKZR3aEsiUJTz_DRMREhNEveJJZ0sEG3P3UsenwNtz0
+
+{
+  "comment": "댓글 내용입니다 111"
+}
+
+###
+PUT http://localhost:8080/api/auth/post/21/like/true
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNTkwOTQ5LCJleHAiOjE2NjE1OTE1NDl9.Tkjmb4rUAmlnZm4KnsUMYFPF5reGrrfapiuFU6rS60s
