@@ -14,7 +14,7 @@ public class PostLike {
 
     @Id // ID 값, Primary Key로 사용하겠다는 뜻입니다.
     @GeneratedValue(strategy = GenerationType.AUTO) // 자동 증가 명령입니다.
-    private Long post_like_id;
+    private Long id;
 
     @JoinColumn(name = "post_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)

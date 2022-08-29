@@ -233,9 +233,6 @@ public class PostService {
         List<PostLike> postLikes = postLikeRepository.findAll();
 
         for (int a = 0; a < postLikes.size(); a++) {
-            System.out.println(postLikes.get(a).getName());
-            System.out.println(post_id);
-            System.out.println(postLikes.get(a).getPost().getId());
             if (postLikes.get(a).getName().equals(username) && post_id == postLikes.get(a).getPost().getId()) {
                 ResponseModel responseModel = ResponseModel.builder()
                         .code(HttpStatus.BAD_REQUEST.value())

@@ -2,7 +2,10 @@ package com.springboot.w3.springboot_w3.Service;
 
 import com.springboot.w3.springboot_w3.Dto.CommentRequestDto;
 import com.springboot.w3.springboot_w3.Dto.CommentResponseDto;
+import com.springboot.w3.springboot_w3.Dto.LikeDto;
+import com.springboot.w3.springboot_w3.Dto.model.CommentLike;
 import com.springboot.w3.springboot_w3.Jwt.JwtTokenProvider;
+import com.springboot.w3.springboot_w3.Repository.CommentLikeRepository;
 import com.springboot.w3.springboot_w3.Repository.CommentRepository;
 import com.springboot.w3.springboot_w3.Repository.PostRepository;
 import com.springboot.w3.springboot_w3.Dto.model.Comment;
@@ -25,6 +28,7 @@ public class CommentService {
     public final CommentRepository repository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PostRepository postRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     public List<Comment> getComment(int id){
         List<Comment> comments = repository.findAll();
@@ -42,6 +46,7 @@ public class CommentService {
 
         List<Comment> comments = repository.findAll();
         List<Comment> id_comment = new ArrayList<>();
+        List<CommentLike> commentLikes = commentLikeRepository.findAll();
 
         for(int a=0; a<comments.size(); a++){
             if (comments.get(a).getPost().getId() == intid)
@@ -152,4 +157,91 @@ public class CommentService {
         return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
     }
 
+    public ResponseEntity<ResponseModel> putCommentLikeTrue(Long comment_id, HttpServletRequest request) {
+
+        Comment comment = repository.findById(comment_id);
+        if (comment == null){
+            ResponseModel responseModel = ResponseModel.builder()
+                    .code(HttpStatus.BAD_REQUEST.value())
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .message("해당 댓글이 존재하지 않습니다.").build();
+
+            return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
+        }
+
+        String token = request.getHeader("Authorization");
+        if (token == null || !jwtTokenProvider.validateToken(token)) {
+            ResponseModel responseModel = ResponseModel.builder()
+                    .code(HttpStatus.BAD_REQUEST.value())
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .message("토큰값이 없거나 유효하지 않습니다.").build();
+
+            return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
+        }
+        String username = jwtTokenProvider.getUserPk(token);
+
+        List<CommentLike> commentLikes = commentLikeRepository.findAll();
+        for(int a=0; a<commentLikes.size(); a++){
+            if (commentLikes.get(a).getComment().getId() == comment_id && commentLikes.get(a).getName().equals(username)){
+                ResponseModel responseModel = ResponseModel.builder()
+                        .code(HttpStatus.BAD_REQUEST.value())
+                        .httpStatus(HttpStatus.BAD_REQUEST)
+                        .message("이미 해당 댓글에 좋아요가 되어 있습니다.").build();
+                return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
+            }
+        }
+
+        CommentLike commentLike = new CommentLike(username, comment);
+        commentLikeRepository.save(commentLike);
+
+        ResponseModel responseModel = ResponseModel.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("comment like success !").build();
+        return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
+
+    }
+
+    public ResponseEntity<ResponseModel> putCommentLikeFalse(Long comment_id, HttpServletRequest request) {
+        Comment comment = repository.findById(comment_id);
+        if (comment == null){
+            ResponseModel responseModel = ResponseModel.builder()
+                    .code(HttpStatus.BAD_REQUEST.value())
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .message("해당 댓글이 존재하지 않습니다.").build();
+
+            return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
+        }
+
+        String token = request.getHeader("Authorization");
+        if (token == null || !jwtTokenProvider.validateToken(token)) {
+            ResponseModel responseModel = ResponseModel.builder()
+                    .code(HttpStatus.BAD_REQUEST.value())
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .message("토큰값이 없거나 유효하지 않습니다.").build();
+
+            return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
+        }
+        String username = jwtTokenProvider.getUserPk(token);
+
+        List<CommentLike> commentLikes = commentLikeRepository.findAll();
+        for(int a=0; a<commentLikes.size(); a++){
+            if (commentLikes.get(a).getComment().getId() == comment_id && commentLikes.get(a).getName().equals(username)){
+
+                commentLikeRepository.delete(commentLikes.get(a));
+
+                ResponseModel responseModel = ResponseModel.builder()
+                        .code(HttpStatus.OK.value())
+                        .httpStatus(HttpStatus.OK)
+                        .message("comment like cancel success!").build();
+                return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
+            }
+        }
+
+        ResponseModel responseModel = ResponseModel.builder()
+                .code(HttpStatus.BAD_REQUEST.value())
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .message("해당 댓글의 좋아요가 없습니다.").build();
+        return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
+    }
 }

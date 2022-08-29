@@ -23,16 +23,6 @@ public class PostController {
         return postService.getPostAllService();
     }
 
-    //해당 게시글 좋아요 추가
-    @PutMapping("/api/auth/post/{post_id}/like/true")
-    public ResponseEntity<ResponseModel> putPostLikeTrue(@PathVariable Long post_id, HttpServletRequest request){
-        return postService.putPostLikeTrue(post_id, request);
-    }
-    @PutMapping("/api/auth/post/{post_id}/like/false")
-    public ResponseEntity<ResponseModel> putPostLikeFalse(@PathVariable Long post_id, HttpServletRequest request){
-        return postService.putPostLikeFalse(post_id, request);
-    }
-
 
 
     @PostMapping("/api/auth/post")
@@ -58,4 +48,15 @@ public class PostController {
     public ResponseEntity<ResponseModel> deletePost(@PathVariable Long post_id, HttpServletRequest request){
         return postService.deletePostService(post_id, request);
     }
+
+    //해당 게시글 좋아요 추가
+    @PutMapping("/api/auth/post/{post_id}/like/true")
+    public ResponseEntity<ResponseModel> putPostLikeTrue(@PathVariable Long post_id, HttpServletRequest request){
+        return postService.putPostLikeTrue(post_id, request);
+    }
+    @PutMapping("/api/auth/post/{post_id}/like/false")
+    public ResponseEntity<ResponseModel> putPostLikeFalse(@PathVariable Long post_id, HttpServletRequest request){
+        return postService.putPostLikeFalse(post_id, request);
+    }
+
 }

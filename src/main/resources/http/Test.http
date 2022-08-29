@@ -28,7 +28,7 @@ Content-Type: application/json
 
 POST http://localhost:8080/api/auth/post
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzUxMzc0LCJleHAiOjE2NjE3NTE5NzR9.F7SKDccTgUi9hDkUrEMKhHdYWpblxRvJWzlXhxj9RPA
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzY0MzQ0LCJleHAiOjE2NjE3NjQ5NDR9.uUc9ffolPTGnBOr3AvtRvLYpxyWO4Ap-a4VeAxGD3sU
 
 {
   "title": "글 제목입니다 2222",
@@ -39,16 +39,16 @@ Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzUxMzc0
 ###
 POST http://localhost:8080/api/auth/post/42/comment
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzUxMzc0LCJleHAiOjE2NjE3NTE5NzR9.F7SKDccTgUi9hDkUrEMKhHdYWpblxRvJWzlXhxj9RPA
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzY0MzQ0LCJleHAiOjE2NjE3NjQ5NDR9.uUc9ffolPTGnBOr3AvtRvLYpxyWO4Ap-a4VeAxGD3sU
 
 {
   "comment": "댓글 내용입니다 111"
 }
 
 ###
-PUT http://localhost:8080/api/auth/post/38/like/true
+PUT http://localhost:8080/api/auth/post/42/like/true
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzQ2OTQ3LCJleHAiOjE2NjE3NDc1NDd9.Q8Cm4uyROid5QzMbwTLwqs_vg_SOsNMijuG_CI_k1oY
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzY0MzQ0LCJleHAiOjE2NjE3NjQ5NDR9.uUc9ffolPTGnBOr3AvtRvLYpxyWO4Ap-a4VeAxGD3sU
 
 
 ###
@@ -63,3 +63,8 @@ Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzUxMzc0
 ###
 GET http://localhost:8080/api/comment/43/recomment
 Content-Type: application/json
+
+###
+PUT http://localhost:8080/api/auth/comment/43/like/true
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzY0MzQ0LCJleHAiOjE2NjE3NjQ5NDR9.uUc9ffolPTGnBOr3AvtRvLYpxyWO4Ap-a4VeAxGD3sU

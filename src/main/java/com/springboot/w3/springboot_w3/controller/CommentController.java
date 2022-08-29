@@ -46,4 +46,15 @@ public class CommentController {
         return commentService.DeleteCommentService(request,id);
     }
 
+
+    //해당 게시글 좋아요 추가
+    @PutMapping("/api/auth/comment/{comment_id}/like/true")
+    public ResponseEntity<ResponseModel> putPostLikeTrue(@PathVariable Long comment_id, HttpServletRequest request){
+        return commentService.putCommentLikeTrue(comment_id, request);
+    }
+    @PutMapping("/api/auth/comment/{comment_id}/like/false")
+    public ResponseEntity<ResponseModel> putPostLikeFalse(@PathVariable Long comment_id, HttpServletRequest request){
+        return commentService.putCommentLikeFalse(comment_id, request);
+    }
+
 }
