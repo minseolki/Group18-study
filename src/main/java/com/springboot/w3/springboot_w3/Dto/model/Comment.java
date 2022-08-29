@@ -31,6 +31,9 @@ public class Comment extends Timestamped{
     @Column(nullable = false)
     private int likeNum;
 
+    @Column(nullable = false)
+    private int recommentNum;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Recomment> recomments;
 
@@ -39,10 +42,15 @@ public class Comment extends Timestamped{
         this.name = username;
         this.comment = requestDto.getComment();
         this.likeNum = 0;
+        this.recommentNum = 0;
     }
 
     public void update(CommentRequestDto requestDto){
         this.comment = requestDto.getComment();
+    }
+
+    public void updateRecommentNum(int recommentNum){
+        this.recommentNum = recommentNum;
     }
 
 

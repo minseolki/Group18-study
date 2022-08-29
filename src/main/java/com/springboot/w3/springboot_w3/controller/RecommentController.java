@@ -36,4 +36,15 @@ public class RecommentController {
     public ResponseEntity<ResponseModel> deleteRecomment(@PathVariable Long recomment_id, HttpServletRequest request){
         return recommentService.deleteRecomment(recomment_id, request);
     }
+
+    //해당 대댓글 좋아요 추가
+    @PutMapping("/api/auth/recomment/{recomment_id}/like/true")
+    public ResponseEntity<ResponseModel> putRecommentLikeTrue(@PathVariable Long recomment_id, HttpServletRequest request){
+        return recommentService.putCommentLikeTrue(recomment_id, request);
+    }
+
+    @PutMapping("/api/auth/recomment/{recomment_id}/like/false")
+    public ResponseEntity<ResponseModel> putReCommentLikeFalse(@PathVariable Long recomment_id, HttpServletRequest request){
+        return recommentService.putCommentLikeFalse(recomment_id, request);
+    }
 }

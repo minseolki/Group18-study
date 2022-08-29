@@ -61,10 +61,25 @@ Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzUxMzc0
 }
 
 ###
+GET http://localhost:8080/api/comment/42
+Content-Type: application/json
+
+
+###
 GET http://localhost:8080/api/comment/43/recomment
 Content-Type: application/json
 
 ###
+GET http://localhost:8080/api/post/42
+Content-Type: application/json
+
+
+###
+PUT http://localhost:8080/api/auth/recomment/46/like/false
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzc2MzE4LCJleHAiOjE2NjE3NzY5MTh9.gxKS9rFAc4rkBqIAkaTtwgku3ZjxHV8W1uQwroYTEqU
+
+###
 PUT http://localhost:8080/api/auth/comment/43/like/true
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzY0MzQ0LCJleHAiOjE2NjE3NjQ5NDR9.uUc9ffolPTGnBOr3AvtRvLYpxyWO4Ap-a4VeAxGD3sU
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzc2MzE4LCJleHAiOjE2NjE3NzY5MTh9.gxKS9rFAc4rkBqIAkaTtwgku3ZjxHV8W1uQwroYTEqU

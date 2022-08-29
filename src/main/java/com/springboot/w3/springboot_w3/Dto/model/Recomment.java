@@ -39,4 +39,9 @@ public class Recomment extends Timestamped{
     public void update(CommentRequestDto requestDto){
         this.recomment = requestDto.getComment();
     }
+
+
+    public void updateLikeNum(int likenum) {
+        this.likeNum = likenum;
+    }
 }

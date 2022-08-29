@@ -1,16 +1,9 @@
 package com.springboot.w3.springboot_w3.Service;
 
-import com.springboot.w3.springboot_w3.Dto.CommentRequestDto;
-import com.springboot.w3.springboot_w3.Dto.CommentResponseDto;
-import com.springboot.w3.springboot_w3.Dto.LikeDto;
-import com.springboot.w3.springboot_w3.Dto.model.CommentLike;
+import com.springboot.w3.springboot_w3.Dto.*;
+import com.springboot.w3.springboot_w3.Dto.model.*;
 import com.springboot.w3.springboot_w3.Jwt.JwtTokenProvider;
-import com.springboot.w3.springboot_w3.Repository.CommentLikeRepository;
-import com.springboot.w3.springboot_w3.Repository.CommentRepository;
-import com.springboot.w3.springboot_w3.Repository.PostRepository;
-import com.springboot.w3.springboot_w3.Dto.model.Comment;
-import com.springboot.w3.springboot_w3.Dto.model.Post;
-import com.springboot.w3.springboot_w3.Dto.ResponseModel;
+import com.springboot.w3.springboot_w3.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +22,8 @@ public class CommentService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PostRepository postRepository;
     private final CommentLikeRepository commentLikeRepository;
+    private final RecommentLikeRepository recommentLikeRepository;
+    private final RecommentRepository recommentRepository;
 
     public List<Comment> getComment(int id){
         List<Comment> comments = repository.findAll();
@@ -45,12 +40,50 @@ public class CommentService {
         int intid = id.intValue();
 
         List<Comment> comments = repository.findAll();
-        List<Comment> id_comment = new ArrayList<>();
+        List<CommentResponseDto> id_comment = new ArrayList<>();
         List<CommentLike> commentLikes = commentLikeRepository.findAll();
+        List<RecommentLike> recommentLikes = recommentLikeRepository.findAll();
+
+        List<Recomment> recomment = recommentRepository.findAll();
 
         for(int a=0; a<comments.size(); a++){
-            if (comments.get(a).getPost().getId() == intid)
-                id_comment.add(comments.get(a));
+            if (comments.get(a).getPost().getId() == intid){
+
+                //각 댓글에 해당하는 좋아요 유저를 담기
+                List<LikeDto> commentLikeDto = new ArrayList<>();
+                for(int b=0; b<commentLikes.size(); b++){
+                    if (commentLikes.get(b).getComment().getId() == comments.get(a).getId()){
+                        commentLikeDto.add(new LikeDto(commentLikes.get(b)));
+                    }
+                }
+
+                //각 댓글에 해당하는 대댓글
+                List<RecommentResponseDto> recommentResponseDtos = new ArrayList<>();
+
+                for (int c=0; c<recomment.size(); c++){
+                    if (recomment.get(c).getComment().getId() == comments.get(a).getId()){
+                        RecommentResponseDto responseDto = new RecommentResponseDto(recomment.get(c));
+                        List<LikeDto> recommentDto = new ArrayList<>();
+                        //대댓글에 해당하는 좋아요 유저
+                        for (int d=0; d<recommentLikes.size(); d++){
+                            if(recomment.get(c).getId() == recommentLikes.get(d).getRecomment().getId()){
+                                LikeDto likeDto = new LikeDto(recommentLikes.get(d));
+                                recommentDto.add(likeDto);
+                            }
+                        }
+                        responseDto.setLikeNum(recommentDto.size());
+                        responseDto.setRecommentLikes(recommentDto);
+                        recommentResponseDtos.add(responseDto);
+                    }
+                }
+
+                CommentResponseDto commentResponseDto = new CommentResponseDto(comments.get(a));
+                commentResponseDto.setLikeNum(commentLikeDto.size());
+                commentResponseDto.setComment_like_list(commentLikeDto);
+                commentResponseDto.setRecomment(recommentResponseDtos);
+                id_comment.add(commentResponseDto);
+            }
+
         }
 
         ResponseModel responseModel = ResponseModel.builder()

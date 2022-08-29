@@ -47,7 +47,7 @@ public class CommentController {
     }
 
 
-    //해당 게시글 좋아요 추가
+    //해당 댓글 좋아요 추가
     @PutMapping("/api/auth/comment/{comment_id}/like/true")
     public ResponseEntity<ResponseModel> putPostLikeTrue(@PathVariable Long comment_id, HttpServletRequest request){
         return commentService.putCommentLikeTrue(comment_id, request);

@@ -13,6 +13,7 @@ public class CommentResponseDto {
     private Long id;
     private String name;
     private String comment;
+    private int recommentNum;
     private List<RecommentResponseDto> recomment;
     private int likeNum;
     private List<LikeDto> comment_like_list;
@@ -24,6 +25,7 @@ public class CommentResponseDto {
         this.name = comment.getName();
         this.comment = comment.getComment();
         this.likeNum = 0;
+        this.recommentNum = 0;
         this.createdAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
     }

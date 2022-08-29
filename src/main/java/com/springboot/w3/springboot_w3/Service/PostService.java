@@ -2,12 +2,9 @@ package com.springboot.w3.springboot_w3.Service;
 
 
 import com.springboot.w3.springboot_w3.Dto.*;
-import com.springboot.w3.springboot_w3.Dto.model.PostLike;
+import com.springboot.w3.springboot_w3.Dto.model.*;
 import com.springboot.w3.springboot_w3.Jwt.JwtTokenProvider;
-import com.springboot.w3.springboot_w3.Repository.PostLikeRepository;
-import com.springboot.w3.springboot_w3.Repository.PostRepository;
-import com.springboot.w3.springboot_w3.Dto.model.Comment;
-import com.springboot.w3.springboot_w3.Dto.model.Post;
+import com.springboot.w3.springboot_w3.Repository.*;
 import com.springboot.w3.springboot_w3.Dto.ResponseModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +24,9 @@ public class PostService {
     private final JwtTokenProvider jwtTokenProvider;
     private final CommentService commentService;
     private final PostLikeRepository postLikeRepository;
+    private final RecommentRepository recommentRepository;
+    private final RecommentLikeRepository recommentLikeRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
     public ResponseEntity<ResponseModel> getPostAllService() {
         int num = (int) postRepository.count();
@@ -97,11 +97,44 @@ public class PostService {
 
         List<Comment> comments = commentService.getComment(int_id);
 
+        List<CommentLike> commentLikes = commentLikeRepository.findAll();
+        List<RecommentLike> recommentLikes = recommentLikeRepository.findAll();
+        List<Recomment> recomment = recommentRepository.findAll();
+
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
-        List<LikeDto> likeDtos = new ArrayList<>();
 
         for(int a=0; a<comments.size(); a++){
             CommentResponseDto responseDto = new CommentResponseDto(comments.get(a));
+
+            List<LikeDto> commentLike = new ArrayList<>();
+            //댓글 좋아요
+            for(int e=0; e<commentLikes.size(); e++){
+                if(commentLikes.get(e).getComment().getId() == comments.get(a).getId()){
+                    commentLike.add(new LikeDto(commentLikes.get(e)));
+                }
+            }
+            responseDto.setLikeNum(commentLike.size());
+
+            List<RecommentResponseDto> recommentResponseDtos = new ArrayList<>();
+            for (int c=0; c<recomment.size(); c++){
+
+                if (recomment.get(c).getComment().getId() == comments.get(a).getId()){
+                    RecommentResponseDto responseDto1 = new RecommentResponseDto(recomment.get(c));
+                    List<LikeDto> recommentDto = new ArrayList<>();
+                    //대댓글에 해당하는 좋아요 유저
+                    for (int d=0; d<recommentLikes.size(); d++){
+                        if(recomment.get(c).getId() == recommentLikes.get(d).getRecomment().getId()){
+                            LikeDto likeDto = new LikeDto(recommentLikes.get(d));
+                            recommentDto.add(likeDto);
+                        }
+                    }
+                    responseDto1.setLikeNum(recommentDto.size());
+                    responseDto1.setRecommentLikes(recommentDto);
+                    recommentResponseDtos.add(responseDto1);
+                }
+            }
+            responseDto.setRecommentNum(recommentResponseDtos.size());
+            responseDto.setRecomment(recommentResponseDtos);
             commentResponseDtoList.add(responseDto);
         }
 
@@ -109,7 +142,9 @@ public class PostService {
         postResponseDto.setComment(commentResponseDtoList);
         postResponseDto.setCommentNum(commentResponseDtoList.size());
 
+        //게시글 좋아요 가져오기
         List<PostLike> likes = postLikeRepository.findAll();
+        List<LikeDto> likeDtos = new ArrayList<>();
 
         for (int a=0; a<likes.size(); a++){
             if(likes.get(a).getPost().getId() == post.getId())

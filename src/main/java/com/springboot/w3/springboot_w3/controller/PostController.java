@@ -4,6 +4,7 @@ package com.springboot.w3.springboot_w3.controller;
 import com.springboot.w3.springboot_w3.Dto.PostRequestDto;
 import com.springboot.w3.springboot_w3.Service.PostService;
 import com.springboot.w3.springboot_w3.Dto.ResponseModel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class PostController {
 
 
     //게시글 상세 조회
-    @PutMapping("/api/post/{post_id}")
+    @GetMapping("/api/post/{post_id}")
     public ResponseEntity<ResponseModel> getPostId(@PathVariable Long post_id){
         return postService.getPostIdService(post_id);
     }
