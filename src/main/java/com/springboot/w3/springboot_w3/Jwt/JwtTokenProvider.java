@@ -21,13 +21,13 @@ import java.util.List;
 @Component
 public class JwtTokenProvider {
 
-    private String secretKey = "webfirefdsgdshfdgfasfdgfgnhnfghgrerweegrwood";
+    private String secretKey = "ffkdslewjkgjekwjgldskfltukewuljfksmbfgderywgeshsh";
 
     // 어세스 토큰 유효시간 10분
     private long tokenValidTime = 10*60* 1000L;
 
-    // 리프레시 토큰 유효기간 10분
-    private long refreshTokenValidTime = 10*60* 1000L;
+    // 리프레시 토큰 유효기간 30분
+    private long refreshTokenValidTime = 30*60* 1000L;
 
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
@@ -49,7 +49,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String createRefreshToken(String userPk) {
+    public String createRefreshToken() {
         Date now = new Date();
 
         String refreshToken = Jwts.builder()

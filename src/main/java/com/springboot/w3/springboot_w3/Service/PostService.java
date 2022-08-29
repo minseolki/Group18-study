@@ -62,6 +62,7 @@ public class PostService {
     public ResponseEntity<ResponseModel> postPostService(PostRequestDto requestDto, HttpServletRequest request) {
 
         String token = request.getHeader("Authorization");
+
         if (token == null || !jwtTokenProvider.validateToken(token)) {
             ResponseModel responseModel = ResponseModel.builder()
                     .code(HttpStatus.BAD_REQUEST.value())
@@ -73,7 +74,8 @@ public class PostService {
 
         String username = jwtTokenProvider.getUserPk(token);
         Post post = new Post(requestDto, username);
-        postRepository.save(post);
+        postRepository.save(post); // 게시글 저장 -> 데이터베이스
+
         List<Post> pp = new ArrayList<>();
         pp.add(post);
         ResponseModel responseModel = ResponseModel.builder()
@@ -107,10 +109,11 @@ public class PostService {
         postResponseDto.setComment(commentResponseDtoList);
         postResponseDto.setCommentNum(commentResponseDtoList.size());
 
-        List<PostLike> likes = post.getPostLikes();
+        List<PostLike> likes = postLikeRepository.findAll();
 
         for (int a=0; a<likes.size(); a++){
-            likeDtos.add(new LikeDto(likes.get(a)));
+            if(likes.get(a).getPost().getId() == post.getId())
+                likeDtos.add(new LikeDto(likes.get(a)));
         }
         postResponseDto.setLikeDtoList(likeDtos);
         postResponseDto.setLikeNum(likeDtos.size());
@@ -211,7 +214,7 @@ public class PostService {
     }
 
     //수정하기 --
-    public ResponseEntity<ResponseModel> getPostLikeTrue(Long post_id, HttpServletRequest request) {
+    public ResponseEntity<ResponseModel> putPostLikeTrue(Long post_id, HttpServletRequest request) {
         Post post = postRepository.findById(post_id).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다.")
         );
@@ -228,9 +231,11 @@ public class PostService {
 
         String username = jwtTokenProvider.getUserPk(token);
         List<PostLike> postLikes = postLikeRepository.findAll();
-        List<LikeDto> likeDtos = new ArrayList<>();
 
         for (int a = 0; a < postLikes.size(); a++) {
+            System.out.println(postLikes.get(a).getName());
+            System.out.println(post_id);
+            System.out.println(postLikes.get(a).getPost().getId());
             if (postLikes.get(a).getName().equals(username) && post_id == postLikes.get(a).getPost().getId()) {
                 ResponseModel responseModel = ResponseModel.builder()
                         .code(HttpStatus.BAD_REQUEST.value())
@@ -241,34 +246,22 @@ public class PostService {
             }
         }
 
-        for (int b = 0; b < postLikes.size(); b++) {
-            if (postLikes.get(b).getPost().getId() == post_id) {
-                likeDtos.add(new LikeDto(postLikes.get(b)));
-            }
-        }
 
         PostLike postLike = new PostLike(username, post);
         postLikeRepository.save(postLike);
 
         int likenum = post.getLikeNum() + 1;
-        System.out.println(likenum);
         post.updateLikeNum(likenum);
-        postRepository.save(post);
-        PostDetailResponseDto postDetailResponseDto = new PostDetailResponseDto(post);
-        postDetailResponseDto.setLikeDtoList(likeDtos);
-
-        List<PostDetailResponseDto> posts = new ArrayList<>();
-        posts.add(postDetailResponseDto);
 
         ResponseModel responseModel = ResponseModel.builder()
-                .code(HttpStatus.BAD_REQUEST.value())
+                .code(HttpStatus.OK.value())
                 .httpStatus(HttpStatus.OK)
-                .message("like success!")
-                .data(new ArrayList<>(posts)).build();
+                .message("like success!").build();
         return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
     }
 
-    public ResponseEntity<ResponseModel> getPostLikeFalse(Long post_id, HttpServletRequest request) {
+    public ResponseEntity<ResponseModel> putPostLikeFalse(Long post_id, HttpServletRequest request) {
+
         Post post = postRepository.findById(post_id).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다.")
         );
@@ -285,43 +278,30 @@ public class PostService {
 
         String username = jwtTokenProvider.getUserPk(token);
         List<PostLike> postLikes = postLikeRepository.findAll();
-        List<LikeDto> likeDtos = new ArrayList<>();
 
         for (int a = 0; a < postLikes.size(); a++) {
+            System.out.println(postLikes.get(a).getName());
+            System.out.println(post_id);
+            System.out.println(postLikes.get(a).getPost().getId());
             if (postLikes.get(a).getName().equals(username) && post_id == postLikes.get(a).getPost().getId()) {
+
+                postLikeRepository.delete(postLikes.get(a)); // 해당 좋아요 삭제
+                int likenum = post.getLikeNum() - 1;
+                post.setLikeNum(likenum);
+
                 ResponseModel responseModel = ResponseModel.builder()
-                        .code(HttpStatus.BAD_REQUEST.value())
+                        .code(HttpStatus.OK.value())
                         .httpStatus(HttpStatus.OK)
-                        .message("이미 해당 게시글에 좋아요가 되었습니다.").build();
+                        .message("like cancel success !").build();
 
                 return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
             }
         }
 
-        for (int b = 0; b < postLikes.size(); b++) {
-            if (postLikes.get(b).getPost().getId() == post_id) {
-                likeDtos.add(new LikeDto(postLikes.get(b)));
-            }
-        }
-
-        PostLike postLike = new PostLike(username, post);
-        postLikeRepository.save(postLike);
-
-        int likenum = post.getLikeNum() - 1;
-        System.out.println(likenum);
-        post.updateLikeNum(likenum);
-        postRepository.save(post);
-        PostDetailResponseDto postDetailResponseDto = new PostDetailResponseDto(post);
-        postDetailResponseDto.setLikeDtoList(likeDtos);
-
-        List<PostDetailResponseDto> posts = new ArrayList<>();
-        posts.add(postDetailResponseDto);
-
         ResponseModel responseModel = ResponseModel.builder()
                 .code(HttpStatus.BAD_REQUEST.value())
-                .httpStatus(HttpStatus.OK)
-                .message("like cancel success!")
-                .data(new ArrayList<>(posts)).build();
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .message("해당 게시글에 좋아요가 되어있지 않습니다.").build();
         return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
     }
 

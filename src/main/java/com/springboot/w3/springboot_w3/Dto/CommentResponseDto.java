@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,7 +13,9 @@ public class CommentResponseDto {
     private Long id;
     private String name;
     private String comment;
+    private List<RecommentResponseDto> recomment;
     private int likeNum;
+    private List<LikeDto> comment_like_list;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 

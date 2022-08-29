@@ -39,15 +39,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         http
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider,userDetailsService),
                         UsernamePasswordAuthenticationFilter.class);
-
-
 
         http
                 .httpBasic().disable() // rest api 만을 고려하여 기본 설정은 해제하겠습니다.
@@ -58,9 +55,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth/**").authenticated()
                 .anyRequest().permitAll();  // 그외 나머지 요청은 누구나 접근 가능
 
-
-
-
         // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다
     }
     @Override
@@ -70,7 +64,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .ignoring()
                 .antMatchers("/h2-console/**", "/api/member/**", "/api/post/**","/api/comment/**");
     }
-
 
 
 }

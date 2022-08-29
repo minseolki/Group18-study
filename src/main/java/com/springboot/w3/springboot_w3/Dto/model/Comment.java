@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Setter
 @Getter // get 함수를 일괄적으로 만들어줍니다.
@@ -29,6 +30,9 @@ public class Comment extends Timestamped{
 
     @Column(nullable = false)
     private int likeNum;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Recomment> recomments;
 
 
     public Comment(CommentRequestDto requestDto, String username){

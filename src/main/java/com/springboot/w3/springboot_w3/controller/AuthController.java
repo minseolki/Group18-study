@@ -39,7 +39,7 @@ public class AuthController {
         authUserService.login(loginDto.getUsername(), loginDto.getPassword());
 
         String accressToken = jwtTokenProvider.createToken(loginDto.getUsername());
-        String refreshToken = jwtTokenProvider.createRefreshToken(loginDto.getUsername());
+        String refreshToken = jwtTokenProvider.createRefreshToken();
 
         return authUserService.tokenPostHeader(accressToken, refreshToken, response, loginDto);
     }

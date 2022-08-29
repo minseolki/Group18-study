@@ -17,5 +17,5 @@ public class ResponseModel {
     private Integer code;
     private HttpStatus httpStatus;
     private String message;
-    private List<Object> data;
+    private List<?> data;
 }
