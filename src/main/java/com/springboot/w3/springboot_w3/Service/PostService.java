@@ -120,7 +120,7 @@ public class PostService {
                 }
             }
             responseDto.setLikeNum(commentLike.size());
-            responseDto.setComment_like_list(commentLike);
+            //responseDto.setComment_like_list(commentLike);
 
             List<RecommentResponseDto> recommentResponseDtos = new ArrayList<>();
             for (int c=0; c<recomment.size(); c++){
@@ -136,7 +136,7 @@ public class PostService {
                         }
                     }
                     responseDto1.setLikeNum(recommentDto.size());
-                    responseDto1.setRecommentLikes(recommentDto);
+                    //responseDto1.setRecommentLikes(recommentDto);
                     recommentResponseDtos.add(responseDto1);
                 }
             }

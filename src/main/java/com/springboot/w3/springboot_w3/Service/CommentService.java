@@ -38,13 +38,14 @@ public class CommentService {
 
     public ResponseEntity<ResponseModel> getAllComment(Long id){
         int intid = id.intValue();
-
+        Optional<Post> post = postRepository.findById(id);
         List<Comment> comments = repository.findAll();
         List<CommentResponseDto> id_comment = new ArrayList<>();
         List<CommentLike> commentLikes = commentLikeRepository.findAll();
         List<RecommentLike> recommentLikes = recommentLikeRepository.findAll();
 
         List<Recomment> recomment = recommentRepository.findAll();
+        List<Comment> comments1 = repository.findCommentByPost(post.get());
 
         for(int a=0; a<comments.size(); a++){
             if (comments.get(a).getPost().getId() == intid){
@@ -72,14 +73,14 @@ public class CommentService {
                             }
                         }
                         responseDto.setLikeNum(recommentDto.size());
-                        responseDto.setRecommentLikes(recommentDto);
+                        //responseDto.setRecommentLikes(recommentDto);
                         recommentResponseDtos.add(responseDto);
                     }
                 }
 
                 CommentResponseDto commentResponseDto = new CommentResponseDto(comments.get(a));
                 commentResponseDto.setLikeNum(commentLikeDto.size());
-                commentResponseDto.setComment_like_list(commentLikeDto);
+                //commentResponseDto.setComment_like_list(commentLikeDto);
                 commentResponseDto.setRecomment(recommentResponseDtos);
                 id_comment.add(commentResponseDto);
             }

@@ -3,7 +3,6 @@ package com.springboot.w3.springboot_w3.Service;
 import com.springboot.w3.springboot_w3.Dto.*;
 import com.springboot.w3.springboot_w3.Dto.model.*;
 import com.springboot.w3.springboot_w3.Jwt.JwtTokenProvider;
-import com.springboot.w3.springboot_w3.Repository.CommentLikeRepository;
 import com.springboot.w3.springboot_w3.Repository.CommentRepository;
 import com.springboot.w3.springboot_w3.Repository.RecommentLikeRepository;
 import com.springboot.w3.springboot_w3.Repository.RecommentRepository;
@@ -24,7 +23,6 @@ public class RecommentService {
     private final JwtTokenProvider jwtTokenProvider;
     private final CommentRepository commentRepository;
     private final RecommentLikeRepository recommentLikeRepository;
-    private final CommentLikeRepository commentLikeRepository;
 
 
     public ResponseEntity<ResponseModel> postRecomment(Long comment_id, CommentRequestDto requestDto, HttpServletRequest request) {
@@ -92,14 +90,6 @@ public class RecommentService {
         }
 
         CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
-        List<CommentLike> commentLikes = commentLikeRepository.findAll();
-        List<LikeDto> commentLikeList = new ArrayList<>();
-
-        for (int a=0; a<commentLikes.size(); a++){
-            if (commentLikes.get(a).getComment().getId() == comment_id)
-                commentLikeList.add(new LikeDto(commentLikes.get(a)));
-        }
-        commentResponseDto.setComment_like_list(commentLikeList);
         commentResponseDto.setRecomment(recommentResponseDtos);
 
         List<CommentResponseDto> list = new ArrayList<>();

@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface RecommentLikeRepository extends JpaRepository<RecommentLike, Long> {
-
+    List<RecommentLike> findRecommentLikeByRecomment(Recomment recomment);
 }
