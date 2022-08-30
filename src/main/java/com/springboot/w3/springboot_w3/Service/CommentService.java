@@ -64,6 +64,7 @@ public class CommentService {
                     if (recomment.get(c).getComment().getId() == comments.get(a).getId()){
                         RecommentResponseDto responseDto = new RecommentResponseDto(recomment.get(c));
                         List<LikeDto> recommentDto = new ArrayList<>();
+
                         //대댓글에 해당하는 좋아요 유저
                         for (int d=0; d<recommentLikes.size(); d++){
                             if(recomment.get(c).getId() == recommentLikes.get(d).getRecomment().getId()){

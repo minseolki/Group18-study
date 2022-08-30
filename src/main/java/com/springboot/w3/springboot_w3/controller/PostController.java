@@ -4,11 +4,12 @@ package com.springboot.w3.springboot_w3.controller;
 import com.springboot.w3.springboot_w3.Dto.PostRequestDto;
 import com.springboot.w3.springboot_w3.Service.PostService;
 import com.springboot.w3.springboot_w3.Dto.ResponseModel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,9 +27,10 @@ public class PostController {
 
 
 
-    @PostMapping("/api/auth/post")
-    public ResponseEntity<ResponseModel> postPost(@RequestBody PostRequestDto requestDto, HttpServletRequest request){
-        return postService.postPostService(requestDto, request);
+    @PostMapping(value = "/api/auth/post", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ResponseModel> postPost(@RequestPart PostRequestDto requestDto,
+                                                  @RequestPart MultipartFile multipartFile, HttpServletRequest request){
+        return postService.postPostService(requestDto, request, multipartFile);
     }
 
 

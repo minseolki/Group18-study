@@ -10,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class PostService {
     private final RecommentRepository recommentRepository;
     private final RecommentLikeRepository recommentLikeRepository;
     private final CommentLikeRepository commentLikeRepository;
+    private final FileUploaderService fileUploaderService;
 
     public ResponseEntity<ResponseModel> getPostAllService() {
         int num = (int) postRepository.count();
@@ -59,7 +62,7 @@ public class PostService {
     }
 
 
-    public ResponseEntity<ResponseModel> postPostService(PostRequestDto requestDto, HttpServletRequest request) {
+    public ResponseEntity<ResponseModel> postPostService(PostRequestDto requestDto, HttpServletRequest request, MultipartFile multipartFile) {
 
         String token = request.getHeader("Authorization");
 
@@ -72,8 +75,11 @@ public class PostService {
             return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
         }
 
+
+        String url = fileUploaderService.uploadImage(multipartFile);
         String username = jwtTokenProvider.getUserPk(token);
         Post post = new Post(requestDto, username);
+        post.setImgUrl(url);
         postRepository.save(post); // 게시글 저장 -> 데이터베이스
 
         List<Post> pp = new ArrayList<>();
@@ -336,5 +342,6 @@ public class PostService {
                 .message("해당 게시글에 좋아요가 되어있지 않습니다.").build();
         return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
     }
+
 
 }

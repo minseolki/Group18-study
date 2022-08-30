@@ -28,7 +28,7 @@ Content-Type: application/json
 
 POST http://localhost:8080/api/auth/post
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzY0MzQ0LCJleHAiOjE2NjE3NjQ5NDR9.uUc9ffolPTGnBOr3AvtRvLYpxyWO4Ap-a4VeAxGD3sU
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxODIwNTUyLCJleHAiOjE2NjE4MjExNTJ9.iRyOo_jWBQbWvoNrN-_Nf1p-nfnTgeltVlPkRMayrZw
 
 {
   "title": "글 제목입니다 2222",
