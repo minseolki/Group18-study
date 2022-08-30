@@ -83,3 +83,9 @@ Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzc2MzE4
 PUT http://localhost:8080/api/auth/comment/43/like/true
 Content-Type: application/json
 Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxNzc2MzE4LCJleHAiOjE2NjE3NzY5MTh9.gxKS9rFAc4rkBqIAkaTtwgku3ZjxHV8W1uQwroYTEqU
+
+
+###
+GET http://localhost:8080/api/auth/mypage
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWV5ZW9uIiwiaWF0IjoxNjYxODM1NTI0LCJleHAiOjE2NjE4MzYxMjR9.frZqqGCBqeFXDMmXDA2Om0IJnGqgghI8q2YiJ4zVHQY
