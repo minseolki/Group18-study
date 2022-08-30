@@ -24,7 +24,7 @@ public class RecommentResponseDto {
         this.id = recomment.getId();
         this.name = recomment.getName();
         this.comment = recomment.getRecomment();
-        this.likeNum = 0;
+        this.likeNum = recomment.getLikeNum();
         this.createdAt = recomment.getCreatedAt();
         this.modifiedAt = recomment.getModifiedAt();
     }

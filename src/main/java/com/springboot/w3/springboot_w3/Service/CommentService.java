@@ -64,7 +64,6 @@ public class CommentService {
                     if (recomment.get(c).getComment().getId() == comments.get(a).getId()){
                         RecommentResponseDto responseDto = new RecommentResponseDto(recomment.get(c));
                         List<LikeDto> recommentDto = new ArrayList<>();
-
                         //대댓글에 해당하는 좋아요 유저
                         for (int d=0; d<recommentLikes.size(); d++){
                             if(recomment.get(c).getId() == recommentLikes.get(d).getRecomment().getId()){
@@ -228,6 +227,10 @@ public class CommentService {
         CommentLike commentLike = new CommentLike(username, comment);
         commentLikeRepository.save(commentLike);
 
+        int likenum = comment.getLikeNum() + 1;
+        comment.setLikeNum(likenum);
+        repository.save(comment);
+
         ResponseModel responseModel = ResponseModel.builder()
                 .code(HttpStatus.OK.value())
                 .httpStatus(HttpStatus.OK)
@@ -263,6 +266,9 @@ public class CommentService {
             if (commentLikes.get(a).getComment().getId() == comment_id && commentLikes.get(a).getName().equals(username)){
 
                 commentLikeRepository.delete(commentLikes.get(a));
+                int likenum = comment.getLikeNum() - 1;
+                comment.setLikeNum(likenum);
+                repository.save(comment);
 
                 ResponseModel responseModel = ResponseModel.builder()
                         .code(HttpStatus.OK.value())

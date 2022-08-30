@@ -3,6 +3,7 @@ package com.springboot.w3.springboot_w3.Service;
 import com.springboot.w3.springboot_w3.Dto.*;
 import com.springboot.w3.springboot_w3.Dto.model.*;
 import com.springboot.w3.springboot_w3.Jwt.JwtTokenProvider;
+import com.springboot.w3.springboot_w3.Repository.CommentLikeRepository;
 import com.springboot.w3.springboot_w3.Repository.CommentRepository;
 import com.springboot.w3.springboot_w3.Repository.RecommentLikeRepository;
 import com.springboot.w3.springboot_w3.Repository.RecommentRepository;
@@ -23,6 +24,7 @@ public class RecommentService {
     private final JwtTokenProvider jwtTokenProvider;
     private final CommentRepository commentRepository;
     private final RecommentLikeRepository recommentLikeRepository;
+    private final CommentLikeRepository commentLikeRepository;
 
 
     public ResponseEntity<ResponseModel> postRecomment(Long comment_id, CommentRequestDto requestDto, HttpServletRequest request) {
@@ -43,8 +45,8 @@ public class RecommentService {
         Comment comment = commentRepository.findById(comment_id);
         recomment.setComment(comment);
         int recommentnum = comment.getRecommentNum() + 1;
-        comment.setRecommentNum(recommentnum);
-        commentRepository.save(comment);
+        comment.updateRecommentNum(recommentnum);
+
         repository.save(recomment);
 
         ResponseModel responseModel = ResponseModel.builder()
@@ -84,14 +86,20 @@ public class RecommentService {
             if (comment_id == recomments.get(a).getComment().getId()){
                 RecommentResponseDto responseDto = new RecommentResponseDto(recomments.get(a));
                 responseDto.setRecommentLikes(likeDtos);
-                responseDto.setLikeNum(likeDtos.size());
                 recommentResponseDtos.add(responseDto);
             }
 
         }
 
-
         CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
+        List<CommentLike> commentLikes = commentLikeRepository.findAll();
+        List<LikeDto> commentLikeList = new ArrayList<>();
+
+        for (int a=0; a<commentLikes.size(); a++){
+            if (commentLikes.get(a).getComment().getId() == comment_id)
+                commentLikeList.add(new LikeDto(commentLikes.get(a)));
+        }
+        commentResponseDto.setComment_like_list(commentLikeList);
         commentResponseDto.setRecomment(recommentResponseDtos);
 
         List<CommentResponseDto> list = new ArrayList<>();
@@ -168,8 +176,7 @@ public class RecommentService {
         }
 
         int recommentnum = recomment.getComment().getRecommentNum() - 1;
-        recomment.getComment().setRecommentNum(recommentnum);
-        commentRepository.save(recomment.getComment());
+        recomment.getComment().updateRecommentNum(recommentnum);
 
         repository.delete(recomment);
         ResponseModel responseModel = ResponseModel.builder()

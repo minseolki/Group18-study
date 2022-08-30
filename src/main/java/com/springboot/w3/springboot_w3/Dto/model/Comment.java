@@ -31,6 +31,9 @@ public class Comment extends Timestamped{
     @Column(nullable = false)
     private int likeNum;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentLike> commentLikeList;
+
     @Column(nullable = false)
     private int recommentNum;
 

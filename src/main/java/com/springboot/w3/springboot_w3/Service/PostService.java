@@ -120,6 +120,7 @@ public class PostService {
                 }
             }
             responseDto.setLikeNum(commentLike.size());
+            responseDto.setComment_like_list(commentLike);
 
             List<RecommentResponseDto> recommentResponseDtos = new ArrayList<>();
             for (int c=0; c<recomment.size(); c++){
@@ -284,12 +285,15 @@ public class PostService {
             }
         }
 
+        List<PostLike> postLikes1 = post.getPostLikes();
 
         PostLike postLike = new PostLike(username, post);
         postLikeRepository.save(postLike);
 
-        int likenum = post.getLikeNum() + 1;
-        post.updateLikeNum(likenum);
+        postLikes1.add(postLike);
+
+        post.updateLikeNum(postLikes1.size());
+        post.setPostLikes(postLikes1);
 
         ResponseModel responseModel = ResponseModel.builder()
                 .code(HttpStatus.OK.value())
@@ -324,8 +328,7 @@ public class PostService {
             if (postLikes.get(a).getName().equals(username) && post_id == postLikes.get(a).getPost().getId()) {
 
                 postLikeRepository.delete(postLikes.get(a)); // 해당 좋아요 삭제
-                int likenum = post.getLikeNum() - 1;
-                post.setLikeNum(likenum);
+                post.setLikeNum(post.getLikeNum()-1);
 
                 ResponseModel responseModel = ResponseModel.builder()
                         .code(HttpStatus.OK.value())

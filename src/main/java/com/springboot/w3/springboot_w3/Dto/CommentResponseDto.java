@@ -13,10 +13,10 @@ public class CommentResponseDto {
     private Long id;
     private String name;
     private String comment;
-    private int recommentNum;
-    private List<RecommentResponseDto> recomment;
     private int likeNum;
     private List<LikeDto> comment_like_list;
+    private int recommentNum;
+    private List<RecommentResponseDto> recomment;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -24,8 +24,8 @@ public class CommentResponseDto {
         this.id = comment.getId();
         this.name = comment.getName();
         this.comment = comment.getComment();
-        this.likeNum = 0;
-        this.recommentNum = 0;
+        this.likeNum = comment.getLikeNum();
+        this.recommentNum = comment.getRecommentNum();
         this.createdAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
     }
