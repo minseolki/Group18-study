@@ -26,9 +26,6 @@ public class PostService {
     private final JwtTokenProvider jwtTokenProvider;
     private final CommentService commentService;
     private final PostLikeRepository postLikeRepository;
-    private final RecommentRepository recommentRepository;
-    private final RecommentLikeRepository recommentLikeRepository;
-    private final CommentLikeRepository commentLikeRepository;
     private final FileUploaderService fileUploaderService;
 
     public ResponseEntity<ResponseModel> getPostAllService() {
@@ -94,7 +91,8 @@ public class PostService {
 
     }
 
-    public ResponseEntity<ResponseModel> getPostIdService(Long id){
+    /*
+    public ResponseEntity<ResponseModel> getPostIdService2(Long id){
         int int_id= id.intValue();
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다.")
@@ -172,6 +170,30 @@ public class PostService {
                 .httpStatus(HttpStatus.OK)
                 .message("게시글 상세 조회 완료")
                 .data(new ArrayList<>(postss)).build();
+
+        return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
+    }
+
+
+     */
+    public ResponseEntity<ResponseModel> getPostIdService(Long id){
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다.")
+        );
+
+        PostResponseDto responseDto = new PostResponseDto(post);
+        List<CommentResponseDto> commentResponseDtoList = commentService.getCommentResponseDto(post);
+
+        responseDto.setCommentList(commentResponseDtoList);
+
+        List<PostResponseDto> responseDtos = new ArrayList<>();
+        responseDtos.add(responseDto);
+
+        ResponseModel responseModel = ResponseModel.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("게시글 상세 조회 완료")
+                .data(responseDtos).build();
 
         return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
     }

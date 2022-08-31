@@ -31,7 +31,7 @@ public class Recomment extends Timestamped{
     @Column(nullable = false)
     private int likeNum;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "recomment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecommentLike> recommentLikeList;
 
     public Recomment(CommentRequestDto requestDto, String username){

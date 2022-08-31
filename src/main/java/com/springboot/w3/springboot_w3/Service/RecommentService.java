@@ -23,6 +23,7 @@ public class RecommentService {
     private final JwtTokenProvider jwtTokenProvider;
     private final CommentRepository commentRepository;
     private final RecommentLikeRepository recommentLikeRepository;
+    private final LikeService likeService;
 
 
     public ResponseEntity<ResponseModel> postRecomment(Long comment_id, CommentRequestDto requestDto, HttpServletRequest request) {
@@ -41,7 +42,10 @@ public class RecommentService {
         String username = jwtTokenProvider.getUserPk(token);
         Recomment recomment = new Recomment(requestDto, username);
         Comment comment = commentRepository.findById(comment_id);
+
+        comment.getRecomments().add(recomment);
         recomment.setComment(comment);
+
         int recommentnum = comment.getRecommentNum() + 1;
         comment.updateRecommentNum(recommentnum);
 
@@ -56,7 +60,8 @@ public class RecommentService {
 
     }
 
-    public ResponseEntity<ResponseModel> getAllRecomment(Long comment_id) {
+    /*
+    public ResponseEntity<ResponseModel> getAllRecomment2(Long comment_id) {
         Comment comment = commentRepository.findById(comment_id);
 
         if (comment == null){
@@ -104,6 +109,41 @@ public class RecommentService {
         return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
 
     }
+
+     */
+
+    public ResponseEntity<ResponseModel> getAllRecomment(Long comment_id) {
+        Comment comment = commentRepository.findById(comment_id);
+
+        if (comment == null){
+            ResponseModel responseModel = ResponseModel.builder()
+                    .code(HttpStatus.BAD_REQUEST.value())
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .message("해당하는 댓글 아이디가 없습니다.").build();
+
+            return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
+        }
+
+        List<Recomment> recomments = repository.findRecommentByComment(comment);
+        List<RecommentResponseDto> recommentResponseDtos = new ArrayList<>();
+
+        for (Recomment recomment : recomments){
+            List<LikeDto> likeDtos = likeService.getRecommentLikeList(recommentLikeRepository.findRecommentLikeByRecomment(recomment));
+            RecommentResponseDto responseDto = new RecommentResponseDto(recomment);
+            responseDto.setRecommentLikes(likeDtos);
+            recommentResponseDtos.add(responseDto);
+        }
+
+        ResponseModel responseModel = ResponseModel.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("대댓글 리스트 조회 성공!")
+                .data(recommentResponseDtos).build();
+
+        return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
+
+    }
+
 
     public ResponseEntity<ResponseModel> putRecomment(Long recomment_id, CommentRequestDto requestDto, HttpServletRequest request) {
 
@@ -278,4 +318,18 @@ public class RecommentService {
     }
 
 
+    public List<RecommentResponseDto> getRecommentResponseDto(Comment comments) {
+        List<RecommentResponseDto> recommentResponseDtos = new ArrayList<>();
+        List<Recomment> recomments = repository.findRecommentByComment(comments);
+
+        for (Recomment recomment : recomments){
+            List<RecommentLike> recommentLikes = recommentLikeRepository.findRecommentLikeByRecomment(recomment);
+            List<LikeDto> likeDtos = likeService.getRecommentLikeList(recommentLikes);
+
+            RecommentResponseDto responseDto = new RecommentResponseDto(recomment);
+            responseDto.setRecommentLikes(likeDtos);
+            recommentResponseDtos.add(responseDto);
+        }
+        return recommentResponseDtos;
+    }
 }

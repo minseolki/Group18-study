@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -16,6 +17,7 @@ public class Comment extends Timestamped{
 
     @Id // ID 값, Primary Key로 사용하겠다는 뜻입니다.
     @GeneratedValue(strategy = GenerationType.AUTO) // 자동 증가 명령입니다.
+    @Column(name = "comment_id")
     private Long id;
 
     @JoinColumn(name = "post_id", nullable = false)
@@ -31,13 +33,13 @@ public class Comment extends Timestamped{
     @Column(nullable = false)
     private int likeNum;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentLike> commentLikeList;
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentLike> commentLikes;
 
     @Column(nullable = false)
     private int recommentNum;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "comment", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Recomment> recomments;
 
 

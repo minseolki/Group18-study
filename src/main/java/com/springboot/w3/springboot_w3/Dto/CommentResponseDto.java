@@ -15,7 +15,7 @@ public class CommentResponseDto {
     private String name;
     private String comment;
     private int likeNum;
-    private List<CommentLike> comment_like_list;
+    private List<LikeDto> comment_like_list;
     private int recommentNum;
     private List<RecommentResponseDto> recomment;
     private LocalDateTime createdAt;

@@ -22,8 +22,9 @@ public class CommentService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PostRepository postRepository;
     private final CommentLikeRepository commentLikeRepository;
-    private final RecommentLikeRepository recommentLikeRepository;
-    private final RecommentRepository recommentRepository;
+    private final RecommentService recommentService;
+
+    private final LikeService likeService;
 
     public List<Comment> getComment(int id){
         List<Comment> comments = repository.findAll();
@@ -36,7 +37,8 @@ public class CommentService {
         return id_comment;
     }
 
-    public ResponseEntity<ResponseModel> getAllComment(Long id){
+    /*
+    public ResponseEntity<ResponseModel> getAllComment2(Long id){
         int intid = id.intValue();
         Optional<Post> post = postRepository.findById(id);
         List<Comment> comments = repository.findAll();
@@ -96,6 +98,33 @@ public class CommentService {
         return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
     }
 
+     */
+
+    public ResponseEntity<ResponseModel> getAllComment(Long id){
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당하는 게시글 아이디가 없습니다.")
+        );
+
+        List<Comment> comments = repository.findCommentByPost(post);
+        List<CommentResponseDto> responseDtos = new ArrayList<>();
+
+        for(Comment comment : comments){
+            CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
+            List<RecommentResponseDto> recommentResponseDtos = recommentService.getRecommentResponseDto(comment);
+
+            commentResponseDto.setRecomment(recommentResponseDtos);
+            responseDtos.add(commentResponseDto);
+        }
+
+        ResponseModel responseModel = ResponseModel.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("댓글 작성 완료")
+                .data(responseDtos).build();
+
+        return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
+    }
+
     public ResponseEntity<ResponseModel> postCommentService(HttpServletRequest request, CommentRequestDto requestDto, Long post_id){
         String token = request.getHeader("Authorization");
 
@@ -111,7 +140,10 @@ public class CommentService {
         String username = jwtTokenProvider.getUserPk(token);
         Optional<Post> post = postRepository.findById(post_id);
         Comment comment = new Comment(requestDto,username);
+
         comment.setPost(post.get());
+        post.get().getComments().add(comment);
+
         repository.save(comment);
         CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
 
@@ -225,7 +257,9 @@ public class CommentService {
             }
         }
 
-        CommentLike commentLike = new CommentLike(username, comment);
+        CommentLike commentLike = new CommentLike(username);
+        commentLike.setComment(comment);
+        comment.getCommentLikes().add(commentLike);
         commentLikeRepository.save(commentLike);
 
         int likenum = comment.getLikeNum() + 1;
@@ -284,5 +318,23 @@ public class CommentService {
                 .httpStatus(HttpStatus.BAD_REQUEST)
                 .message("해당 댓글의 좋아요가 없습니다.").build();
         return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
+    }
+
+    public List<CommentResponseDto> getCommentResponseDto(Post post) {
+        List<Comment> comments = repository.findCommentByPost(post);
+        List<CommentResponseDto> responseDtos = new ArrayList<>();
+
+        for (Comment comment : comments){
+            List<CommentLike> commentLikes = commentLikeRepository.findCommentLikeByComment(comment);
+            List<LikeDto> likeDtos = likeService.getCommentLikeList(commentLikes);
+
+            List<RecommentResponseDto> recommentResponseDtos = recommentService.getRecommentResponseDto(comment);
+
+            CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
+            commentResponseDto.setComment_like_list(likeDtos);
+            commentResponseDto.setRecomment(recommentResponseDtos);
+            responseDtos.add(commentResponseDto);
+        }
+        return responseDtos;
     }
 }

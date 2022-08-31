@@ -1,6 +1,5 @@
 package com.springboot.w3.springboot_w3.Dto.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.springboot.w3.springboot_w3.Dto.PostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,13 +31,13 @@ public class Post extends Timestamped {
     private String imgUrl;
 
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
     @Column(nullable = false)
     private int likeNum;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> postLikes;
 
     @Column(nullable = false)
